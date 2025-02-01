@@ -1,6 +1,6 @@
 # aprsnetreporter
 
-aprsnetreporter is a Java library that read [APRS](http://www.aprs.org/)
+aprsnetreporter is a Java library that reads [APRS](http://www.aprs.org/)
 packets from the internet and builds participant and participant
 location reports for simple APRS nets.
 
@@ -11,7 +11,7 @@ much more.
 APRS nets can be created simply by sending an APRS message to a specific callsign
 with a specific prefix.  This form of net does not rely on other internet services but only APRS.
 
-aprsnetreporter is licensed under the GNU Lesser General Public License. The aim of
+aprsnetreporter is licensed under the GNU General Public License. The aim of
 the library is to make APRS nets easier to hold and report.
 
 If you would like to contribute to aprsnetreporter, please let us know and contribute 
