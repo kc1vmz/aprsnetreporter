@@ -42,7 +42,9 @@ Usage:
 
  --messagePrefix "prefix" - prefix on APRS messages to include
 
- --callsign "callsign" - operator callsign
+ --callsign "callsign" - message receiver callsign
+
+ --operatorCallsign "callsign" - operator callsign
 
  --operatorName "Operator Name" - Name of the operator
 
@@ -74,4 +76,6 @@ You can gather APRS messages sent to a callsign that have a specific prefix over
 You can create a CSV file containing the participants and their messages, as well as participants and their location.
 
 You can create a PDF file containing the similar information in a prettier format.
+
+You can gather APRS messages sent to a callsign other than the operator creating the reports.  Useful when using ANSRVR as a destination for messages.
 
