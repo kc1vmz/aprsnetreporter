@@ -35,7 +35,8 @@ public class Main {
         System.out.println(" --generateDataFiles - generate data files");
         System.out.println(" --generateReportFiles - generate PDF report files");
         System.out.println(" --messagePrefix \"prefix\" - prefix on APRS messages to include");
-        System.out.println(" --callsign \"callsign\" - operator callsign");
+        System.out.println(" --callsign \"callsign\" - message receiver callsign");
+        System.out.println(" --operatorCallsign \"callsign\" - operator callsign");
         System.out.println(" --operatorName \"Operator Name\" - Name of the operator");
         System.out.println(" --taskId \"task id\" - Task Id for the Net");
         System.out.println(" --taskName \"task name\" - Task name for the Net");
@@ -75,6 +76,7 @@ public class Main {
         String netParticipantMapReportName = null;
         String password = null;
         String operatorName = null;
+        String operatorCallsign = null;
         String taskId = null;
         String taskName = null;
         String startTime = null;
@@ -96,6 +98,9 @@ public class Main {
                 generateReportFiles = true;
             } else if (arg.equalsIgnoreCase("--callsign")) {
                 callsign = args[i + 1];
+                i++;
+            } else if (arg.equalsIgnoreCase("--operatorCallsign")) {
+                operatorCallsign = args[i + 1];
                 i++;
             } else if (arg.equalsIgnoreCase("--messagePrefix")) {
                 messagePrefix = args[i + 1];
@@ -144,7 +149,10 @@ public class Main {
         }
 
         if ((callsign == null) || (callsign.isBlank())) {
-            callsign = UserPrompt.promptUser("Callsign: ", false);
+            callsign = UserPrompt.promptUser("Receiver callsign: ", false);
+        }
+        if ((operatorCallsign == null) || (operatorCallsign.isBlank())) {
+            operatorCallsign = UserPrompt.promptUser("Callsign: ", false);
         }
         if ((operatorName == null) || (operatorName.isBlank())) {
             operatorName = UserPrompt.promptUser("Operator name: ", false);
@@ -205,11 +213,14 @@ public class Main {
             password = UserPrompt.promptUser("Data source password: ", true);
         }
 
-
         // validate answers
         if ((callsign == null) || (callsign.isBlank())) {
             displayUsage();
-            throw new RuntimeException("Missing required information - callsign");
+            throw new RuntimeException("Missing required information - receiver callsign");
+        }
+        if ((operatorCallsign == null) || (operatorCallsign.isBlank())) {
+            displayUsage();
+            throw new RuntimeException("Missing required information - operator callsign");
         }
         if ((operatorName == null) || (operatorName.isBlank())) {
             displayUsage();
@@ -271,11 +282,12 @@ public class Main {
         ApplicationContext ctx = new ApplicationContext();
         ctx.setAPRSprovider(APRSInformationSources.APRSFI);
         ctx.setCallsign(callsign);
+        ctx.setOperatorCallsign(operatorCallsign);
         ctx.setMessagePrefix(messagePrefix);
         ctx.setVerbose(verboseMode);
         ctx.setNetParticipantFileName(netParticipantFileName);
         ctx.setNetParticipantMapFileName(netParticipantMapFileName);
-        ctx.setApikey(password); // "206829.HJuFqPV6fcpqTKIa");
+        ctx.setApikey(password);
         ctx.setOperatorName(operatorName);
         ctx.setTaskId(taskId);
         ctx.setTaskName(taskName);

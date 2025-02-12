@@ -2,7 +2,7 @@ package com.kc1vmz.object;
 
 public class ApplicationVersion {
     public static final String getVersion() {
-        return "v1.0.0";
+        return "v1.0.1";
     }
     public static final String getApplicationName() {
         return "APRS Net Reporter";

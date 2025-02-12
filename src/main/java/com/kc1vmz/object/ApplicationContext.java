@@ -15,6 +15,7 @@ public class ApplicationContext {
     String netParticipantReportName;
     String netParticipantMapReportName;
     String operatorName;
+    String operatorCallsign;
     String taskId;
     String taskName;
     LocalDateTime startTime;
@@ -52,6 +53,12 @@ public class ApplicationContext {
     }
     public void setCallsign(String callsign) {
         this.callsign = callsign;
+    }
+    public String getOperatorCallsign() {
+        return operatorCallsign;
+    }
+    public void setOperatorCallsign(String operatorCallsign) {
+        this.operatorCallsign = operatorCallsign;
     }
     public String getApikey() {
         return apikey;

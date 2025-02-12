@@ -166,7 +166,7 @@ public class NetParticipantReport {
         Cell cell1 = new Cell().add(new Paragraph("RADIO OPERATOR NAME: "+ctx.getOperatorName())).setBorder(new SolidBorder(1));
         PdfUtils.fixupFont(cell1);
         table.addCell(cell1);
-        Cell cell2 = new Cell().add(new Paragraph("STATION I.D. " + ctx.getCallsign())).setBorder(new SolidBorder(1));
+        Cell cell2 = new Cell().add(new Paragraph("STATION I.D. " + ctx.getOperatorCallsign())).setBorder(new SolidBorder(1));
         PdfUtils.fixupFont(cell2);
         table.addCell(cell2);
         return table;
