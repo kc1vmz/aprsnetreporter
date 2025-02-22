@@ -16,7 +16,6 @@ public class Main {
      */
     public static void main(String[] args) {
         displayBanner();
-
         ApplicationContext ctx = processArguments(args);
 
         try {
@@ -32,8 +31,8 @@ public class Main {
         System.out.println("Usage:");
         System.out.println(" --verbose - display debug information");
         System.out.println(" --help - display usage information");
-        System.out.println(" --generateDataFiles - generate data files");
-        System.out.println(" --generateReportFiles - generate PDF report files");
+        System.out.println(" --generateDataFiles (Yes | No) - generate data files");
+        System.out.println(" --generateReportFiles (Yes | No) - generate PDF report files");
         System.out.println(" --messagePrefix \"prefix\" - prefix on APRS messages to include");
         System.out.println(" --callsign \"callsign\" - message receiver callsign");
         System.out.println(" --operatorCallsign \"callsign\" - operator callsign");
@@ -44,7 +43,7 @@ public class Main {
         System.out.println(" --netParticipantMapFileName \"filename\" - Filename for Participant location data file");
         System.out.println(" --netParticipantReportName \"filename\" - Filename for Participant report");
         System.out.println(" --netParticipantMapReportName \"filename\" - Filename for Participant location report");
-        System.out.println(" --dataSource \"APRSFI\" - Data source to retrieve APRS information from (APRSFI only useful value so far)");
+        System.out.println(" --dataSource \"APRSFI | CSV | APRSFISCRAPE \" - Data source to retrieve APRS information from (APRSFI, CSV or APRSFISCRAPE file)");
         System.out.println(" --password \"password\" - Password to retrieve APRS information from data source");
         System.out.println(" --start \"time in YYYY-MM-DDTHH:MM format\" - Start time for Net");
         System.out.println(" --end \"time in YYYY-MM-DDTHH:MM format\" - End time for Net");
@@ -66,7 +65,6 @@ public class Main {
     private static ApplicationContext processArguments(String[] args) {
         boolean verboseMode = false;
         boolean unknown = false;
-        boolean useAPRSFI = false;
         String dataSource = null;
         String callsign = null;
         String messagePrefix = null;
@@ -83,6 +81,7 @@ public class Main {
         String endTime = null;
         Boolean generateDataFiles = null;
         Boolean generateReportFiles = null;
+        APRSInformationSources src = APRSInformationSources.UNKNOWN;
 
 
         for (int i = 0; i < args.length; i++) {
@@ -93,9 +92,21 @@ public class Main {
                 displayUsage();
                 return null;
             } else if (arg.equalsIgnoreCase("--generateDataFiles")) {
-                generateDataFiles = true;
+                String val = args[i + 1];
+                i++;
+                if ("YES".equalsIgnoreCase(val)) {
+                    generateDataFiles = true;
+                } else {
+                    generateDataFiles = false;
+                }
             } else if (arg.equalsIgnoreCase("--generateReportFiles")) {
-                generateReportFiles = true;
+                String val = args[i + 1];
+                i++;
+                if ("YES".equalsIgnoreCase(val)) {
+                    generateReportFiles = true;
+                } else {
+                    generateReportFiles = false;
+                }
             } else if (arg.equalsIgnoreCase("--callsign")) {
                 callsign = args[i + 1];
                 i++;
@@ -173,7 +184,7 @@ public class Main {
             endTime = UserPrompt.promptUser("End time (YYYY-MM-DDTHH:MM): ", false);
         }
         if ((dataSource == null) || (dataSource.isBlank())) {
-            dataSource = UserPrompt.promptUser("Data source (ex: APRSFI): ", false);
+            dataSource = UserPrompt.promptUser("Data source (ex: APRSFI, CSV or APRSFISCRAPE): ", false);
         }
         if (generateDataFiles == null) {
             String prompt = UserPrompt.promptUser("Generate data files (Y/N): ", false);
@@ -250,25 +261,34 @@ public class Main {
             displayUsage();
             throw new RuntimeException("Missing required information - data source");
         } else {
-            if (!dataSource.equalsIgnoreCase("APRSFI")) {
-                displayUsage();
-                throw new RuntimeException("Inbvalid information - data source must be APRSFI");
+            if (dataSource.equalsIgnoreCase("APRSFI")) {
+                src = APRSInformationSources.APRSFI;
+            } else if (dataSource.equalsIgnoreCase("CSV")) {
+                src = APRSInformationSources.CSV;
+            } else if (dataSource.equalsIgnoreCase("APRSFISCRAPE")) {
+                src = APRSInformationSources.APRSFISCRAPE;
             } else {
-                useAPRSFI = true;
+                displayUsage();
+                throw new RuntimeException("Invalid information - data source must be APRSFI, CSV or APRSFISCRAPE");
             }
         }
         if ((password == null) || (password.isBlank())) {
             displayUsage();
             throw new RuntimeException("Missing required information - password");
         }
-        if (generateDataFiles) {
+        if (generateDataFiles && (src.equals(APRSInformationSources.APRSFI))) {
             if ((netParticipantFileName == null) || (netParticipantFileName.isBlank())) {
                 throw new RuntimeException("Missing required information - participant data file name");
             }
             if ((netParticipantMapFileName == null) || (netParticipantMapFileName.isBlank())) {
                 throw new RuntimeException("Missing required information - participant location file name");
             }
+        }
+        if ((src.equals(APRSInformationSources.CSV)) || (src.equals(APRSInformationSources.APRSFISCRAPE))) {
+            if ((netParticipantFileName == null) || (netParticipantFileName.isBlank())) {
+                throw new RuntimeException("Missing required information - participant data file name");
             }
+        }
         if (generateReportFiles) {
             if ((netParticipantReportName == null) || (netParticipantReportName.isBlank())) {
                 throw new RuntimeException("Missing required information - participant location data report name");
@@ -298,9 +318,7 @@ public class Main {
         ctx.setGenerateDataFiles(generateDataFiles);
         ctx.setGenerateReportFiles(generateReportFiles);
         ctx.setRetrieveData(true);
-        if (useAPRSFI) {
-            ctx.setAPRSprovider(APRSInformationSources.APRSFI);
-        }
+        ctx.setAPRSprovider(src);
 
         return ctx;
     }

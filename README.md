@@ -24,11 +24,24 @@ patches, fixes and improvements.
 Executing 'mvn compile' will build the library, executing 'mvn package' will create a JAR package.
 All compiled code winds up in the "target" directory. A fat JAR is also created.
 
-## Examples
+## Features
+
+You can gather APRS messages sent to a callsign that have a specific prefix over a specific time period from web sites making APRS information available, such as https://aprs.fi.
+
+You can create a CSV file containing the participants and their messages, as well as participants and their location.
+
+You can create a PDF file containing the similar information in a prettier format.
+
+You can gather APRS messages sent to a callsign other than the operator creating the reports.  Useful when using ANSRVR as a destination for messages.
+
+You can provide a text file that scraped APRS.FI for messages to a callsign as input to the reporting
+
+
+## Usage
 
 You can invoke the parser from the command line:
 
-$ java -jar aprsnetreporter-1.0-SNAPSHOT-jar-with-dependencies.jar  --help
+$ java -jar aprsnetreporter-1.0.2-SNAPSHOT-jar-with-dependencies.jar  --help
 
 Usage:
 
@@ -36,9 +49,9 @@ Usage:
 
  --help - display usage information
 
- --generateDataFiles - generate data files
+ --generateDataFiles - generate data files (Yes | No)
 
- --generateReportFiles - generate PDF report files
+ --generateReportFiles - generate PDF report files (Yes | No)
 
  --messagePrefix "prefix" - prefix on APRS messages to include
 
@@ -60,7 +73,7 @@ Usage:
 
  --netParticipantMapReportName "filename" - Filename for Participant location report
 
- --dataSource "APRSFI" - Data source to retrieve APRS information from (APRSFI only useful value so far)
+ --dataSource "APRSFI | CSV | APRSFISCRAPE" - Data source to retrieve APRS information from
 
  --password "password" - Password to retrieve APRS information from data source
 
@@ -69,13 +82,10 @@ Usage:
  --end "time in YYYY-MM-DDTHH:MM format" - End time for Net
 
 
-## Features
+## Examples
 
-You can gather APRS messages sent to a callsign that have a specific prefix over a specific time period from web sites making APRS information available, such as https://aprs.fi.
+$ java -jar aprsnetreporter-1.0.2-SNAPSHOT-jar-with-dependencies.jar --operatorCallsign YOURCALLSIGN --callsign RECEIVINGCALLSIGN --dataSource APRSFISCRAPE --messagePrefix "YOURPREFIX" --netParticipantFileName scraped_messages.txt --netParticipantReportName report.pdf --netParticipantMapFileName locations.txt --netParticipantMapReportName locations.pdf --password YOURAPRS.FI_KEY --taskId "Task Id for Report" --taskname "Task name for Report" --start dateYYYY-MM-DDTHH:MM --end dateYYYY-MM-DDTHH:MM --operatorName "Your name for report" --generateReportFiles yes --generateDataFiles no
 
-You can create a CSV file containing the participants and their messages, as well as participants and their location.
-
-You can create a PDF file containing the similar information in a prettier format.
-
-You can gather APRS messages sent to a callsign other than the operator creating the reports.  Useful when using ANSRVR as a destination for messages.
+This will read "scraped_messages.txt" to build a standard 309 form with participants in "report.pdf" and create a file containing locations of participants in "locations.txt" and "locations.pdf".
+You need to replace YOURCALLSIGN, RECEIVINGCALLSIGN and YOURAPRS.FI_KEY, as well as the task and operator information.
 

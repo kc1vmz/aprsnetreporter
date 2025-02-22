@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import com.kc1vmz.interfaces.APRSInformationSource;
@@ -93,6 +94,11 @@ public class APRSFIAccessor implements APRSInformationSource {
     public List<APRSLocation> getAPRSLocations(ApplicationContext ctx, String callsign) {
         List<APRSLocation> ret = new ArrayList<>();
         String url = buildLocationUrl(ctx, callsign);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Exception e) {
+            // skip 
+        }
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -114,7 +120,9 @@ public class APRSFIAccessor implements APRSInformationSource {
                         // filter out by date
                         LocalDateTime msgTime = convertDateTimeString(location.getLasttime());
                         if ((msgTime.isBefore(ctx.getStartTime()))) {
-                            System.out.println("-- FILTERED " + msgTime.toString() + " --");
+                            if (ctx.isVerbose()) {
+                                System.out.println("-- FILTERED OUT " + callsign + " because location is prior to net - " + msgTime.toString() + " --");
+                            }
                             continue;
                         }
 

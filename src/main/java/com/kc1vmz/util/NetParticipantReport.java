@@ -9,6 +9,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -20,7 +21,7 @@ import com.kc1vmz.object.ApplicationVersion;
 
 public class NetParticipantReport {
 
-    private final static int MAX_ROWS = 29;
+    private final static int MAX_ROWS = 27;
 
     /**
      * create a net participation report based on ICS-309 PDF file
@@ -52,6 +53,7 @@ public class NetParticipantReport {
 
                 document.add(addFooter(ctx, page, pageCount));
                 document.add(addGenerator());
+                document.add(new AreaBreak());
             }
             document.close();
         } catch ( Exception e) {

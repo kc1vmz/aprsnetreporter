@@ -11,6 +11,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -56,6 +57,7 @@ public class NetParticipantLocationReport {
 
                 document.add(addFooter(ctx, page, pageCount));
                 document.add(addGenerator());
+                document.add(new AreaBreak());
             }
             document.close();
         } catch ( Exception e) {
@@ -134,11 +136,8 @@ public class NetParticipantLocationReport {
      * @return table
      */
     private static Table addCommunicationsLogHeader() {
-        Table table = new Table(6);
+        Table table = new Table(5);
         table.useAllAvailableWidth();
-        Cell cell1 = new Cell().add(new Paragraph("TIME")).setBorder(new SolidBorder(1)).setTextAlignment(TextAlignment.CENTER);
-        PdfUtils.fixupFontBold(cell1);
-        table.addCell(cell1);
 
         Cell cell2 = new Cell().add(new Paragraph("PARTICIPANT")).setBorder(new SolidBorder(1)).setTextAlignment(TextAlignment.CENTER);
         PdfUtils.fixupFontBold(cell2);
@@ -232,10 +231,7 @@ public class NetParticipantLocationReport {
                 continue;
             }
 
-            String timeStr = DateUtils.getTimeStr(location.getLastTime());
-
-            Cell cellTime = new Cell().add(new Paragraph(timeStr));
-            Cell cellFrom = new Cell().add(new Paragraph((location.getSrcCallsign())));
+            Cell cellFrom = new Cell().add(new Paragraph((location.getName())));
             Cell cellLong = new Cell().add(new Paragraph((location.getLongitude().toString())));
             Cell cellLat = new Cell().add(new Paragraph((location.getLatitude().toString())));
             Cell cellPath = new Cell().add(new Paragraph((location.getPath())));
@@ -248,7 +244,6 @@ public class NetParticipantLocationReport {
 
             Cell cellGrid = new Cell().add(new Paragraph(grid));
 
-            table.addCell(cellTime);
             table.addCell(cellFrom);
             table.addCell(cellLong);
             table.addCell(cellLat);
@@ -265,8 +260,8 @@ public class NetParticipantLocationReport {
         // build blank rows
         if (itemCount < MAX_ROWS) {
             for (; itemCount < MAX_ROWS; itemCount++) {
-                // add row of 6 cells
-                for (int i = 0; i < 6; i++) {
+                // add row of 5 cells
+                for (int i = 0; i < 5; i++) {
                     Cell cell = new Cell();
                     cell.setHeight(16);
                     table.addCell(cell);
